@@ -1,3 +1,5 @@
+config_app.json
+.DS_Store
 *.pyc
 configs/*
 scripts/backup_mysql.sh
