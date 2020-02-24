@@ -23,7 +23,7 @@ import helper
 
 try:
   if __name__ != '__main__':
-    print "not allow"
+    print("not allow")
     sys.exit()
 
   current_file = os.path.realpath(__file__)
@@ -31,59 +31,59 @@ try:
 
   os.chdir(current_path)
 
-  print sys.argv
+  print(sys.argv)
 
   if len(sys.argv) != 3:
-    print helper.coloured_output("wrong argv python restore.py config_file_path restore_path" , 'red')
-    print helper.coloured_output("Example: python restore.py configs/abc.com.json /var/www/" , 'blue')
+    print(helper.coloured_output("wrong argv python restore.py config_file_path restore_path" , 'red'))
+    print(helper.coloured_output("Example: python restore.py configs/abc.com.json /var/www/" , 'blue'))
     sys.exit()
 
   config_file_path = sys.argv[1]
   restore_path = sys.argv[2]
 
   if  os.path.isfile(config_file_path) is False:
-    print "not found config file: "+config_file_path
+    print("not found config file: "+config_file_path)
     sys.exit()
 
   if os.path.exists(current_path) is False:
-    print "not found restore path: "+config_file_path
-    print "make sure this's a folder"
+    print("not found restore path: "+config_file_path)
+    print("make sure this's a folder")
     sys.exit()
   
   config_file = open(config_file_path, 'r')
   config = json.loads(config_file.read())
 
   drive_service = helper.createDriveService(config)
-  print helper.coloured_output("Authentication is sucessful" , 'green')
+  print(helper.coloured_output("Authentication is sucessful" , 'green'))
 
-  print helper.coloured_output("Getting list of children files" , 'yellow')
+  print(helper.coloured_output("Getting list of children files" , 'yellow'))
 
   children_files = helper.files_in_folder( drive_service, config['backup_folder_id'], True )
 
   if len( children_files ) == 0:
-    print helper.coloured_output("Not found any file on your backup folder to restoring" , 'red')
+    print(helper.coloured_output("Not found any file on your backup folder to restoring" , 'red'))
     sys.exit()
 
   # if len( children_files ) > 0:
-  #   print json.dumps(children_files)
+  #   print(json.dumps(children_files))
 
 
-  print "I found {0} files on your backup folder, the smaller number is newer file version: ".format( len(children_files) )
+  print("I found {0} files on your backup folder, the smaller number is newer file version: ".format( len(children_files) ))
   index = 1
   for children in children_files:
     
     #Convert unicode to datetime object
     modify_date = datetime.strptime(children['modifiedDate'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    print "version {0} on {1}".format( str(index), modify_date.strftime('%Y-%m-%d %H:%M:%S %Z') )
+    print("version {0} on {1}".format( str(index), modify_date.strftime('%Y-%m-%d %H:%M:%S %Z') ))
     index +=1
 
-  print "What's file do you want to download[ Input number, 1 is newsest, [1, {0}] ]".format( str( len(children_files) ) )
-  file_index = raw_input("Your answer: ")
+  print("What's file do you want to download[ Input number, 1 is newsest, [1, {0}] ]".format( str( len(children_files) ) ))
+  file_index = input("Your answer: ")
 
   if file_index is None or file_index.isdigit() is False:
     file_index = "1"
 
-#  print "file_index is "  + file_index
+#  print("file_index is "  + file_index)
 
   file_index = int(file_index) - 1
 
@@ -97,28 +97,27 @@ try:
 
   file_path = os.path.join(restore_path, "{0}.{1}".format( str(file_index + 1), select_file["title"])) 
 
-  print helper.coloured_output("Restoring to " + file_path, 'yellow')  
+  print(helper.coloured_output("Restoring to " + file_path, 'yellow')  )
 
   if download_url:
     resp, content = drive_service._http.request(download_url)
     if resp.status == 200:
-      #print 'Status: %s' % resp
-      #print json.dumps(resp)
+      #print('Status: %s' % resp)
+      #print(json.dumps(resp))
 
-      handle = file( file_path,'wb')
+      handle = open( file_path,'wb')
       handle.write(content)
       handle.close()
-      print helper.coloured_output("Restored to " + file_path, 'green')  
+      print(helper.coloured_output("Restored to " + file_path, 'green')  )
       #return content
     else:
-      print helper.coloured_output('An error occurred: %s' % resp, 'red')  
+      print(helper.coloured_output('An error occurred: %s' % resp, 'red')  )
       #return None
 
 
-except Exception, e:
-  print 
-  print helper.coloured_output("error when restoring", 'red')
-  print e
+except Exception as e:
+  print(helper.coloured_output("error when restoring", 'red'))
+  print(e)
 finally:
   pass
 
