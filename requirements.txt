@@ -1,0 +1,11 @@
+cachetools==4.0.0
+google-api-python-client==1.7.11
+google-auth==1.11.2
+google-auth-httplib2==0.0.3
+httplib2==0.17.0
+oauth2client==1.5.2
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycrypto==2.6.1
+rsa==4.0
+uritemplate==3.0.1
